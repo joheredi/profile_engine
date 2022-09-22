@@ -1,0 +1,313 @@
+{
+  "stages": [{
+      "id": "initialize",
+      "nodes": [{
+          "id": "start",
+          "controllers": [],
+          "triggers": [
+              {
+                  "kind": "piston_position",
+                  "operator": ">=",
+                  "value": 60,
+                  "target": "2"
+              },
+              {
+                  "kind": "piston_position",
+                  "operator": "<",
+                  "value": 60,
+                  "target": "1"
+              }
+          ]
+      },
+      {
+          "id": "1",
+          "controllers": [
+              {
+                  "kind": "move_piston",
+                  "parameters": {
+                      "mode": "absolute_position",
+                      "value": 60,
+                      "speed": 2
+                  }
+              },
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "piston_position",
+                  "operator": ">=",
+                  "value": 60,
+                  "target": "2"
+              }
+          ]
+      },
+      {
+          "id": "2",
+          "controllers": [{
+              "kind": "weight",
+              "parameters": {
+                  "value": 60
+              }
+          }],
+          "triggers": [
+              {
+                  "kind": "has_water",
+                  "operator": "==",
+                  "value": true,
+                  "target": "4"
+              },
+              {
+                  "kind": "has_water",
+                  "operator": "==",
+                  "value": false,
+                  "target": "3"
+              }
+          ]
+      },
+      {
+          "id": "3",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "error",
+                  "parameters": {
+                      "code": "no_water"
+                  }
+              },
+              {
+                  "kind": "timer",
+                  "parameters": {
+                      "timeInMs": 2000
+                  }
+              },
+              {
+                  "kind": "timeout",
+                  "parameters": {
+                      "timeInMs": 1000,
+                      "tag": "water_check"
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "timeout",
+                  "tag": "water_check",
+                  "operator": "==",
+                  "value": true,
+                  "target": "end"
+              },
+              {
+                  "kind": "wake",
+                  "operator": "==",
+                  "value": true,
+                  "target": "2"
+              }
+          ]
+      },
+      {
+          "id": "4",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "water_temp",
+                  "operator": ">=",
+                  "value": 90,
+                  "target": "5"
+              }
+          ]
+      },
+      {
+          "id": "5",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              },
+              {
+                  "kind": "timer",
+                  "parameters": {
+                      "timeInMs": 5000
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "wake",
+                  "operator": "==",
+                  "value": true,
+                  "target": "6"
+              }
+          ]
+      },
+      {
+          "id": "6",
+          "controllers": [
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              },
+              {
+                  "kind": "move_piston",
+                  "parameters": {
+                      "mode": "absolute_position",
+                      "value": 55,
+                      "speed": 1.5
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "piston_position",
+                  "operator": "<=",
+                  "value": 55,
+                  "target": "7"
+              }
+          ]
+      },
+      {
+          "id": "7",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              },
+              {
+                  "kind": "timer",
+                  "parameters": {
+                      "timeInMs": 500
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "wake",
+                  "value": true,
+                  "operator": "==",
+                  "target": "8"
+              }
+          ]
+      },
+      {
+          "id": "8",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              },
+              {
+                  "kind": "move_piston",
+                  "parameters": {
+                      "mode": "absolute_position",
+                      "value": 0,
+                      "speed": 5
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "piston_position",
+                  "operator": "<=",
+                  "value": 0,
+                  "target": "9"
+              }
+          ]
+      },
+      {
+          "id": "9",
+          "controllers": [
+              {
+                  "kind": "weight",
+                  "parameters": {
+                      "value": 60
+                  }
+              },
+              {
+                  "kind": "set_water_temp",
+                  "parameters": {
+                      "mode": "linear_interpolation",
+                      "x": 0,
+                      "y": 90
+                  }
+              },
+              {
+                  "kind": "timer",
+                  "parameters": {
+                      "timeInMs": 200
+                  }
+              }
+          ],
+          "triggers": [
+              {
+                  "kind": "wake",
+                  "operator": "==",
+                  "value": true,
+                  "target": "end"
+              }
+          ]
+      }, 
+      {
+          "id": "end",
+          "controllers": [],
+          "triggers": []
+      }]
+  }]
+}
